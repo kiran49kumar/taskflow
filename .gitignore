@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+*.db
+.env
+venv/
+env/
+
+# Node
+node_modules/
+dist/
+.env.local
+.env.production
+
+# Unused alternate Node backend files
+backend/package.json
+backend/package-lock.json
+backend/server.js
+backend/db.js
+backend/routes/
+backend/middleware/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
