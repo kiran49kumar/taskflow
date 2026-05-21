@@ -1,8 +1,24 @@
 # TaskFlow - Team Task Manager
 
-TaskFlow is a full-stack task management app for teams. It includes login/signup, admin and member roles, projects, task assignment, task status updates, priority tracking, and a dashboard.
+TaskFlow is a full-stack team task manager where users can create projects, add team members, assign tasks, and track progress with role-based access control.
 
-This project is intended to run with a Python/Flask backend, a React/Vite frontend, and a local SQLite database.
+## Live Links
+
+- Live App: https://vigilant-trust-production-ad17.up.railway.app/
+- Backend Health Check: https://taskflow-production-5d678.up.railway.app/health
+- GitHub Repository: https://github.com/kiran49kumar/taskflow
+
+## Assignment Coverage
+
+- Authentication: signup/login with JWT tokens
+- Role-based access: Admin and Member permissions
+- Project management: create projects and manage project teams
+- Team management: add members by email
+- Task management: create, assign, update, and delete tasks
+- Status tracking: To Do, In Progress, Done
+- Dashboard: project count, task totals, overdue tasks, recent tasks
+- REST API and database: Flask APIs with SQLite relationships
+- Deployment: backend and frontend deployed on Railway
 
 ## Tech Stack
 
@@ -13,28 +29,28 @@ This project is intended to run with a Python/Flask backend, a React/Vite fronte
 | Auth | JWT with flask-jwt-extended, bcrypt |
 | Frontend | React 18, Vite, React Router, Axios |
 | Styling | Custom CSS |
-| Deployment | Railway-ready Flask config |
+| Deployment | Railway |
 
-## Project Location
+## How It Works
 
-If you downloaded the project as provided, the main project folder is:
+TaskFlow has two Railway services:
 
-```powershell
-C:\Users\kirankumar\Downloads\files\taskflow-complete\task-manager
-```
+- Backend service deployed from `backend`
+- Frontend service deployed from `frontend`
 
-Open this folder in VS Code or use it from PowerShell.
+The React frontend calls the Flask backend using `VITE_API_URL`. The backend exposes REST APIs under `/api`, stores data in SQLite, hashes passwords with bcrypt, and uses JWT tokens for authenticated requests.
 
-## Prerequisites
+Admins can create projects, add members, create tasks, assign tasks, edit task details, and delete tasks. Members can view project tasks and update only the status of tasks assigned to them.
 
-Install these before running the project:
+## Local Setup
 
-- Python 3.9 or newer: https://www.python.org/downloads/
-- Node.js 18 or newer: https://nodejs.org/
-- Git: https://git-scm.com/downloads
-- VS Code, recommended: https://code.visualstudio.com/
+### Prerequisites
 
-Check that everything works:
+- Python 3.9 or newer
+- Node.js 18 or newer
+- Git
+
+Check your versions:
 
 ```powershell
 python --version
@@ -43,23 +59,7 @@ npm -v
 git --version
 ```
 
-If `python` does not work on Windows, try:
-
-```powershell
-py --version
-```
-
-## Local Setup
-
-### 1. Open the project folder
-
-```powershell
-cd C:\Users\kirankumar\Downloads\files\taskflow-complete\task-manager
-```
-
-### 2. Start the backend
-
-Open a PowerShell terminal:
+### Backend
 
 ```powershell
 cd backend
@@ -68,49 +68,37 @@ Copy-Item .env.example .env
 python app.py
 ```
 
-If your system uses the Windows Python launcher, use this instead:
-
-```powershell
-py app.py
-```
-
-The backend runs at:
+Backend runs at:
 
 ```text
 http://localhost:5000
 ```
 
-To confirm it is working, open this in your browser:
+Health check:
 
 ```text
 http://localhost:5000/health
 ```
 
-You should see a JSON response with `status: "ok"`.
+### Frontend
 
-### 3. Start the frontend
-
-Open a second PowerShell terminal:
+Open a second terminal:
 
 ```powershell
-cd C:\Users\kirankumar\Downloads\files\taskflow-complete\task-manager\frontend
+cd frontend
 npm install
 npm run dev
 ```
 
-The frontend runs at:
+Frontend runs at:
 
 ```text
 http://localhost:5173
 ```
 
-Open that URL in your browser.
-
 ## Environment Variables
 
-The backend reads settings from `backend/.env`.
-
-Example:
+Backend:
 
 ```env
 PORT=5000
@@ -118,140 +106,17 @@ JWT_SECRET=change_this_to_a_long_random_secret_in_production
 NODE_ENV=development
 ```
 
-For local development, the default values are enough. Before deploying, change `JWT_SECRET` to a strong random value.
+Frontend:
 
-The frontend reads `VITE_API_URL` if you create a frontend `.env` file. For local development, the frontend already points to:
-
-```text
-http://localhost:5000
+```env
+VITE_API_URL=http://localhost:5000
 ```
 
-## Important Note About Backend Files
+On Railway, `VITE_API_URL` is set to the deployed backend URL:
 
-The `backend` folder also contains Node files such as `server.js`, `db.js`, and `package.json`. For this project setup, use the Flask backend:
-
-```powershell
-python app.py
+```env
+VITE_API_URL=https://taskflow-production-5d678.up.railway.app
 ```
-
-You do not need to run `npm start` inside the backend folder.
-
-## Git and GitHub Setup
-
-### 1. Initialize Git
-
-Run this from the main project folder:
-
-```powershell
-cd C:\Users\kirankumar\Downloads\files\taskflow-complete\task-manager
-git init
-git status
-```
-
-### 2. Add files and make the first commit
-
-```powershell
-git add .
-git commit -m "Initial commit"
-```
-
-The project includes a `.gitignore` file so folders like `node_modules`, `.env`, `dist`, virtual environments, and local database files are not committed.
-
-### 3. Create a GitHub repository
-
-1. Go to https://github.com/
-2. Click **New repository**
-3. Give it a name, for example `taskflow`
-4. Do not add a README, `.gitignore`, or license on GitHub because this project already has local files
-5. Click **Create repository**
-
-### 4. Connect your local project to GitHub
-
-Replace `YOUR_USERNAME` with your GitHub username:
-
-```powershell
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/taskflow.git
-git push -u origin main
-```
-
-After this, your code will be visible in your GitHub repository.
-
-## Daily Git Workflow
-
-When you make changes:
-
-```powershell
-git status
-git add .
-git commit -m "Describe your change"
-git push
-```
-
-To download the latest changes from GitHub:
-
-```powershell
-git pull
-```
-
-Useful commands:
-
-```powershell
-git status
-git log --oneline
-git remote -v
-```
-
-## Common Problems
-
-### pip install fails
-
-Make sure Python is installed:
-
-```powershell
-python --version
-pip --version
-```
-
-If needed, use:
-
-```powershell
-py -m pip install -r requirements.txt
-```
-
-### Backend says port 5000 is already in use
-
-Another process is already using port 5000. Close that process or change `PORT` in `backend/.env`.
-
-### Frontend cannot connect to backend
-
-Make sure the backend terminal is still running and check:
-
-```text
-http://localhost:5000/health
-```
-
-### npm install fails in frontend
-
-Make sure Node.js is installed correctly:
-
-```powershell
-node -v
-npm -v
-```
-
-Then run `npm install` from the `frontend` folder.
-
-## Features
-
-- Signup and login with JWT authentication
-- Admin and member roles
-- Create and manage projects
-- Add members to projects
-- Create, assign, update, and delete tasks
-- Filter tasks by status and priority
-- Dashboard with progress and recent task information
-- Kanban-style task grouping
 
 ## API Overview
 
@@ -269,7 +134,7 @@ Then run `npm install` from the `frontend` folder.
 | --- | --- | --- |
 | GET | `/api/projects` | List user's projects |
 | POST | `/api/projects` | Create a project |
-| GET | `/api/projects/:id` | Get project details |
+| GET | `/api/projects/:id` | Get project details and members |
 | DELETE | `/api/projects/:id` | Delete a project |
 | POST | `/api/projects/:id/members` | Add a project member |
 | DELETE | `/api/projects/:id/members/:uid` | Remove a project member |
@@ -283,6 +148,12 @@ Then run `npm install` from the `frontend` folder.
 | PATCH | `/api/tasks/:id` | Update a task |
 | DELETE | `/api/tasks/:id` | Delete a task |
 
+### Dashboard
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/api/dashboard` | Get project count, task totals, overdue tasks, and recent tasks |
+
 ## Project Structure
 
 ```text
@@ -290,8 +161,9 @@ task-manager/
   backend/
     app.py
     requirements.txt
-    .env.example
     railway.toml
+    nixpacks.toml
+    .env.example
   frontend/
     src/
       api.js
@@ -302,53 +174,65 @@ task-manager/
       pages/
     package.json
     vite.config.js
+    railway.toml
   README.md
   .gitignore
 ```
 
-## Test Flow
+## Demo Flow
 
-1. Start the backend with `python app.py`.
-2. Start the frontend with `npm run dev`.
-3. Open `http://localhost:5173`.
-4. Sign up as an admin user.
-5. Create a project.
-6. Sign up as a member user in another browser or incognito window.
-7. Add the member to the project using their email.
-8. Create tasks and assign them to the member.
-9. Log in as the member and update task status.
+Use this flow for a 2-5 minute demo video:
+
+1. Open the live app.
+2. Sign up as an Admin.
+3. Create a project.
+4. Sign up as a Member in another browser or incognito window.
+5. Log back in as Admin and add the Member by email.
+6. Create a task and assign it to the Member.
+7. Log in as the Member.
+8. Open the project and update the assigned task using Start or Mark Done.
+9. Show the dashboard progress and task status counts.
+
+## Git Commit Story
+
+The commit history is organized by assignment feature:
+
+- Project setup and README documentation
+- Repository ignore rules
+- Flask backend API with authentication, validation, RBAC, and SQLite
+- React/Vite frontend foundation
+- Authentication flow and protected routes
+- Dashboard progress tracking
+- Project management UI
+- Team member and task management UI
+- Railway deployment fixes
 
 ## Deployment Notes
 
-This project can be deployed as two services:
+Backend Railway service:
 
-- Backend service root: `backend`
-- Frontend service root: `frontend`
+```text
+Root Directory: backend
+Start Command: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+Health Check: /health
+```
 
-For the backend, set:
+Frontend Railway service:
+
+```text
+Root Directory: frontend
+Build Command: npm install && npm run build
+Start Command: npx serve -s dist -l tcp://0.0.0.0:$PORT
+```
+
+Required Railway variables:
 
 ```env
 JWT_SECRET=your_strong_secret
 NODE_ENV=production
-FRONTEND_URL=https://your-frontend-domain.com
+VITE_API_URL=https://taskflow-production-5d678.up.railway.app
 ```
 
-The backend deployment command is:
+## Notes
 
-```bash
-gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
-```
-
-For the frontend, set:
-
-```env
-VITE_API_URL=https://your-backend-domain.com
-```
-
-Frontend build/start commands:
-
-```bash
-npm install
-npm run build
-npm run serve
-```
+Local database files, environment files, build output, and dependency folders are intentionally ignored by Git.
