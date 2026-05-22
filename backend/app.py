@@ -1,4 +1,5 @@
 import os
+import re
 import sqlite3
 import bcrypt
 from datetime import datetime, timedelta
@@ -11,11 +12,17 @@ from flask_jwt_extended import (
 )
 
 app = Flask(__name__)
-CORS(app, origins="*")
+# Allow specific origin in production, wildcard in dev
+_cors_origins = os.environ.get('FRONTEND_URL', '*')
+if _cors_origins != '*':
+    CORS(app, origins=[_cors_origins], supports_credentials=True)
+else:
+    CORS(app, origins='*')
 
 # Config
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET', 'super-secret-change-in-prod')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1MB max request size
 jwt = JWTManager(app)
 
 DB_PATH = os.environ.get('DB_PATH', 'taskmanager.db')
@@ -144,6 +151,10 @@ def signup():
         return jsonify({'error': 'Name, email, and password are required'}), 400
     if len(password) < 6:
         return jsonify({'error': 'Password must be at least 6 characters'}), 400
+    if len(name) > 100:
+        return jsonify({'error': 'Name too long (max 100 characters)'}), 400
+    if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+        return jsonify({'error': 'Invalid email format'}), 400
 
     db = get_db()
     if db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone():
@@ -554,9 +565,19 @@ def health():
     return jsonify({'status': 'ok', 'timestamp': datetime.utcnow().isoformat()})
 
 
-init_db()
+@app.errorhandler(413)
+def too_large(e):
+    return jsonify({'error': 'Request too large'}), 413
 
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
+    init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=os.environ.get('DEBUG', 'false').lower() == 'true')
